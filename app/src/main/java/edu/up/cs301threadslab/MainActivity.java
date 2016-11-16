@@ -70,7 +70,7 @@ public class MainActivity extends Activity
         @Override
         public void run() {
             for (;;) {
-                sleep(3000);
+                sleep(50);
                 myAV.postInvalidate();
             }
         }

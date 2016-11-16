@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Vector;
 import java.util.Random;
 
@@ -20,12 +22,16 @@ public class StarAnimation extends Animation {
 
     private int initStars = 0;
 
+    private ArrayList<Objects> sync = new ArrayList<>();
+
     /* when this is set to 'false' the next animation frame won't twinkle */
     private boolean twinkle = true;
 
     /** ctor expects to be told the size of the animation canvas */
     public StarAnimation(int initWidth, int initHeight) {
         super(initWidth, initHeight);
+        Runnable thread1 = new threadClass(sync);
+        new Thread(thread1).start();
     }
 
     /** whenever the canvas size changes, generate new stars */
@@ -63,10 +69,12 @@ public class StarAnimation extends Animation {
     /** draws the next frame of the animation */
     @Override
     public void draw(Canvas canvas) {
-        for (Star s : field) {
-            s.draw(canvas);
-            if (this.twinkle) {
-                s.twinkle();
+        synchronized (sync) {
+            for (Star s : field) {
+                s.draw(canvas);
+                if (this.twinkle) {
+                    s.twinkle();
+                }
             }
         }
 
@@ -94,5 +102,38 @@ public class StarAnimation extends Animation {
             }
         }
         this.twinkle = false;
+    }
+
+    // thread to add/remove stars
+    private class threadClass extends Thread {
+
+        private ArrayList<Objects> s;
+
+        public threadClass(ArrayList<Objects> object) {
+            s = object;
+        }
+        @Override
+        public void run() {
+            for (;;) {
+                try {
+                    Thread.sleep(2);
+                }
+                catch (InterruptedException ix) {
+                }
+                int random;
+                Random rand = new Random();
+                random = rand.nextInt(2);
+                synchronized (s) {
+                    switch (random) {
+                        case 0:
+                            addStar();
+                            break;
+                        case 1:
+                            removeStar();
+                            break;
+                    }
+                }
+            }
+        }
     }
 }//class StarAnimation

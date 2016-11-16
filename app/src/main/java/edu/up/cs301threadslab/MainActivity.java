@@ -62,10 +62,10 @@ public class MainActivity extends Activity
         try {
             Thread.sleep(millis);
         }
-        catch (InterruptedException ix) {}
+        catch (InterruptedException ix) {
+        }
     }
 
-    //runnable class
     private class runClass implements Runnable {
         @Override
         public void run() {
@@ -75,6 +75,4 @@ public class MainActivity extends Activity
             }
         }
     }
-
-
 }

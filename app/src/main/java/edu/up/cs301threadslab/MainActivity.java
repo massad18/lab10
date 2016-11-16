@@ -58,10 +58,19 @@ public class MainActivity extends Activity
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
 
+    public static void sleep (int millis) {
+        try {
+            Thread.sleep(millis);
+        }
+        catch (InterruptedException ix) {}
+    }
+
+    //runnable class
     private class runClass implements Runnable {
         @Override
         public void run() {
             for (;;) {
+                sleep(3000);
                 myAV.postInvalidate();
             }
         }
